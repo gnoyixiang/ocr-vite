@@ -82,5 +82,5 @@ export default function OCR() {
     init();
   }, []);
 
-  return null;
+  return <div>Testing...</div>;
 }
