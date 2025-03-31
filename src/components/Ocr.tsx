@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface OCR {
   recognize: (imageEl: HTMLImageElement) => Promise<{ text: string[] }>;
@@ -13,6 +13,7 @@ const ACTIONS = {
 export default function OCR() {
   const ocrRef = useRef<OCR>(null);
   const initializedRef = useRef(false);
+  const [ready, setReady] = useState(false);
 
   const processOCR = async (imageData: string) => {
     if (!ocrRef.current) {
@@ -45,6 +46,7 @@ export default function OCR() {
       initializedRef.current = true;
       window.parent.postMessage({ action: ACTIONS.INIT, result: true }, "*");
       console.log("ocr initialized!");
+      setReady(true);
     } catch (error) {
       const msg = (error as Error).message;
       console.log("error initializing ocr...", msg);
@@ -56,6 +58,7 @@ export default function OCR() {
         },
         "*"
       );
+      alert(msg);
       return;
     }
   };
@@ -81,6 +84,10 @@ export default function OCR() {
     });
     init();
   }, []);
+
+  if (ready) {
+    return <div>Ready!</div>;
+  }
 
   return <div>Testing...</div>;
 }
